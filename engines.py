@@ -10,9 +10,8 @@ class TranscriptEngine(Protocol):
     """Protocol for a transcription engine"""
 
     def transcribe(self, language, audio_file: bytes) -> str:
-        """ transcribe audio file to text """
+        """transcribe audio file to text"""
         ...
-
 
 
 class AssemblyAI:
@@ -24,7 +23,9 @@ class AssemblyAI:
 
     def transcribe(self, language, audio_file: BytesIO) -> str:
         headers = {'authorization': self.api_key, 'content-type': 'application/json'}
-        upload_response = requests.post(AssemblyAI.upload, headers=headers, data=audio_file)
+        upload_response = requests.post(
+            AssemblyAI.upload, headers=headers, data=audio_file
+        )
 
         audio_url = upload_response.json()['upload_url']
 
@@ -56,7 +57,6 @@ class AssemblyAI:
 
 
 class GoogleCloud:
-
     def __init__(self, api_key: str):
         self.api_key = api_key
 
@@ -74,7 +74,9 @@ class GoogleCloud:
         operation = client.long_running_recognize(config=config, audio=audio)
         response = operation.result()
 
-        return ' '.join(result.alternatives[0].transcript for result in response.results)
+        return ' '.join(
+            result.alternatives[0].transcript for result in response.results
+        )
 
 
 def get_engine(engine_type: str, api_key: str | None) -> TranscriptEngine:

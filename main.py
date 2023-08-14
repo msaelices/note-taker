@@ -32,11 +32,13 @@ def main():
         'Select a transcription engine:', ['AssemblyAI', 'Google']
     )
     if engine_type in ['AssemblyAI']:
-        engine_api_key = os.environ.get(f'{engine_type.upper()}_API_KEY') or st.text_input(
-            f'Enter your {engine_type} API key:', type='password'
-        )
+        engine_api_key = os.environ.get(
+            f'{engine_type.upper()}_API_KEY'
+        ) or st.text_input(f'Enter your {engine_type} API key:', type='password')
     else:
-        engine_api_key = None  # Google doesn't need an API key but uses a credentials file
+        engine_api_key = (
+            None  # Google doesn't need an API key but uses a credentials file
+        )
     openai_model = os.environ.get('OPENAI_MODEL') or st.selectbox(
         'Select a model:', ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4-0613']
     )
@@ -55,9 +57,7 @@ def main():
             if openai_api_key:
                 st.markdown('Transcribing the audio...')
                 engine = get_engine(engine_type, engine_api_key)
-                transcription = apis.transcribe(
-                    engine, language, uploaded_audio
-                )
+                transcription = apis.transcribe(engine, language, uploaded_audio)
 
                 st.markdown(
                     f'###  Transcription:\n\n<details><summary>Click to view</summary><p><pre><code>{transcription}</code></pre></p></details>',
@@ -67,7 +67,9 @@ def main():
                 st.markdown('Summarizing the transcription...')
 
                 summary = apis.summarize_transcript(
-                    openai_api_key, transcription, openai_model,
+                    openai_api_key,
+                    transcription,
+                    openai_model,
                 )
 
                 st.markdown(f'### Summary:')

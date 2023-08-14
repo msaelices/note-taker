@@ -4,7 +4,6 @@ from io import BytesIO
 from engines import TranscriptEngine
 
 
-
 def transcribe(engine: TranscriptEngine, language: str, audio_file: BytesIO) -> str:
     return engine.transcribe(language, audio_file)
 
