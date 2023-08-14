@@ -67,8 +67,8 @@ class GoogleCloud:
 
         config = speech.RecognitionConfig(
             encoding=speech.RecognitionConfig.AudioEncoding.ENCODING_UNSPECIFIED,
-            # language_code=language,
-            language_code='es-ES',
+            language_code=language,
+            enable_speaker_diarization=True,
         )
 
         operation = client.long_running_recognize(config=config, audio=audio)
