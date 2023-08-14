@@ -2,6 +2,7 @@ import os
 import streamlit as st
 
 from dotenv import load_dotenv
+from engines import get_engine
 
 import apis
 
@@ -26,10 +27,16 @@ def main():
     openai_api_key = os.environ.get('OPENAI_API_KEY') or st.text_input(
         'Enter your OpenAI API key:', type='password'
     )
-    assemblyai_api_key = os.environ.get('ASSEMBLYAI_API_KEY') or st.text_input(
-        'Enter your AssemblyAI API key:', type='password'
-    )
 
+    engine_type = os.environ.get('TRANSCRIPTION_ENGINE') or st.selectbox(
+        'Select a transcription engine:', ['AssemblyAI', 'Google']
+    )
+    if engine_type in ['AssemblyAI']:
+        engine_api_key = os.environ.get(f'{engine_type.upper()}_API_KEY') or st.text_input(
+            f'Enter your {engine_type} API key:', type='password'
+        )
+    else:
+        engine_api_key = None  # Google doesn't need an API key but uses a credentials file
     openai_model = os.environ.get('OPENAI_MODEL') or st.selectbox(
         'Select a model:', ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4-0613']
     )
@@ -45,10 +52,11 @@ def main():
 
     if st.button('Generate Notes'):
         if uploaded_audio:
-            if openai_api_key and assemblyai_api_key:
+            if openai_api_key:
                 st.markdown('Transcribing the audio...')
+                engine = get_engine(engine_type, engine_api_key)
                 transcription = apis.transcribe(
-                    assemblyai_api_key, language, uploaded_audio
+                    engine, language, uploaded_audio
                 )
 
                 st.markdown(
